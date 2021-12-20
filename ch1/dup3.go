@@ -1,0 +1,30 @@
+// dup3.go prints the text and count of each line that occurs more that one in the named input files.
+package main
+
+import (
+    "fmt"
+    "io/ioutil"
+    "os"
+    "strings"
+)
+
+func main() {
+    counts := make(map[string]int)
+
+    for _, filename := range os.Args[1:] {
+        data, err := ioutil.ReadFile(filename)
+        if err != nil {
+            fmt.Fprintf(os.Stderr, "dup3: %v\n", err)
+            continue
+        }
+        for _, line := range strings.Split(string(data), "\n") {
+            counts[line]++
+        }
+    }
+
+    for line, n := range counts {
+        if n > 1 {
+            fmt.Printf("%d\t%s\n", n, line)
+        }
+    }
+}
